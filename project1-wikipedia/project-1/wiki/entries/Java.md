@@ -1,0 +1,1 @@
+Java is a purely Object Oriented programming Langauge

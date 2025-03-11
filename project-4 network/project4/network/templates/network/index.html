@@ -1,0 +1,151 @@
+{% extends "network/layout.html" %}
+
+{% block body %}
+<script>
+  // Function to get CSRF token
+function getCookie(name) {
+    const val = `; ${document.cookie}`;
+    const parts = val.split(`; ${name}=`);
+    if (parts.length === 2) {
+        return parts.pop().split(";").shift();
+    }
+}
+
+//  Function to submit edited post dynamically
+function submitnew_post(id) {
+    const textareaValue = document.getElementById(`textarea_${id}`).value;
+    const content = document.getElementById(`content_${id}`);
+    const modal = document.getElementById(`modal_edit_post_${id}`);
+
+    fetch(`/edit/${id}`, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": getCookie("csrftoken")
+        },
+        body: JSON.stringify({
+            content: textareaValue
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        if (content) {
+            content.innerHTML = result.data; // Update content dynamically
+        }
+
+        // Hide Bootstrap modal after editing
+        const bootstrapModal = bootstrap.Modal.getInstance(modal);
+        if (bootstrapModal) {
+            bootstrapModal.hide();
+        }
+    })
+    .catch(error => console.error("Error:", error));
+}
+
+//  Function to handle like/unlike dynamically
+function liked_post(id, liked) {
+    const btn=document.getElementById(`${id}`);
+    btn.classList.remove("fa-thumbs-up");
+    btn.classList.remove("fa-thumbs-down");
+    if(liked.indexOf(id)>=0){
+      var likes=true;
+    }else{
+      var likes=false;
+    }
+    if(likes===true){
+      fetch(`/remove/${id}`)
+      .then(response=>response.json)
+      .then(result=>{
+        btn.classList.add('fa-thumbs-up');
+
+      })
+    }else{
+      fetch(`/add/${id}`)
+      .then(response=>response.json)
+      .then(result=>{
+        // console.log(1)
+        btn.classList.add('fa-thumbs-down');
+    })
+
+  }
+  likes=!likes
+            
+}
+
+</script>
+<h1 >All Posts</h1>
+    {% if user.is_authenticated %}
+    <div class=" my-1 mx-1  border border-dark ">
+    <div class="my-3 mx-3">
+      <h2>New Post</h2>
+      <form action="{% url 'new_post' %}" method="POST">
+        {% csrf_token %}
+        <textarea name="Content" row="4"  cols="120"></textarea>
+      </br>
+        <input type="submit" value="Post" class="btn btn-primary">
+      </form>
+    </div>
+    </div>
+    {% endif %}
+    <!-- EDIT PAGE  -->
+    <div class=""> 
+    {% for post in post_page %}
+    <div class="mx-1 w-50  border border-dark ">
+    <div class="my-3 mx-3">
+    <h5 class="username"><strong>User:</strong><a href="{% url 'profile_post' user_id=post.user.id %}">{{post.user}}</a></h5>
+      <div class="content" id="content_{{post.id}}">{{post.Content}}</div>
+      <div class="date">{{post.Timestamp}}</div>
+      {% if user.is_authenticated %}
+      {% if user == post.user %}
+    
+     <div class="d-flex justify-content-end">
+        <button class="btn btn-primary" type="button" data-toggle="modal" data-target="#modal_edit_post_{{post.id}}">Edit</button>
+      </div>
+      <div class="modal fade" id="modal_edit_post_{{post.id}}" tabindex="-1" role="dialog" aria-labelby="modal_edit_post_{{post.id}}_label" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">Edit Post</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <textarea rows="8" id="textarea_{{post.id}}" class="form-control" name="content">{{post.Content}}</textarea>
+            </div>
+            <div class="modal-footer">
+              <!-- logic to saving button -->
+              <button type="button" class="btn btn-primary" onclick="submitnew_post('{{post.id}}')">Save changes</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+          </div>
+        </div>
+      </div> 
+      {% else %}
+              {% if post.id in liked%}
+              <!-- already liked  -->
+              <button class="btn btn-secondary fa fa-thumbs-down" onclick="liked_post('{{post.id}}','{{liked}}')" id="{{post.id}}"></button>
+              {%else%}
+              <!-- not liked yet -->
+              <button class="btn btn-secondary fa fa-thumbs-up" onclick="liked_post('{{post.id}}','{{liked}}')" id="{{post.id}}"></button>
+      {% endif %}
+      {% endif %}
+
+      {% endif %}
+</div>
+</div>
+    {% endfor %}
+    </div>
+    <nav aria-label="Page navigation example">
+      <ul class="pagination  my-1 d-flex justify-content-center ">
+       
+       {% if post_page.has_previous %}
+       <li class="page-item"><a class="page-link" href="?page={{post_page.previous_page_number}}">Previous</a></li>
+       {%endif %}
+       {% if post_page.has_next %}
+        <li class="page-item"><a class="page-link" href="?page={{post_page.next_page_number}}">Next</a></li>
+        {% endif %}
+      </ul>
+    </nav>
+    
+{% endblock %}

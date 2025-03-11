@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animation</title>
+</head>
+<style>
+    @keyframes move {
+        0%{
+            left:0%;
+            font-size:10px;
+        }
+        50%{
+            left:50%;
+            font-size:100px;
+        }
+        100%{
+            left:0%;
+            font-size:10px;
+        }
+    }
+    h1{
+        position:relative;
+        animation-name:move;
+        animation-duration:2s;
+        animation-fill-mode:forwards;
+        animation-iteration-count: 4;
+
+    }
+</style>
+<script>
+    document.addEventListener("DOMContentLoaded",function(){
+        const h=document.querySelector('h1');
+        h.style.webkitAnimationPlayState='paused';
+        document.querySelector('button').onclick=()=>{
+            if(h.style.animationPlayState==='paused'){
+                h.style.animationPlayState='running';
+            }
+            else{
+                h.style.animationPlayState='paused';
+            }
+        }
+
+    })
+</script>
+<body>
+    <button>Click</button>
+    <h1>HELLO</h1>
+    
+</body>
+</html>

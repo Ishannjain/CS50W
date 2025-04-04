@@ -1,0 +1,13 @@
+textarea {
+    min-height: 400px;
+}
+.read{
+    background-color:green;
+    width:50%;
+    border:black 1px solid;
+}
+.unread{
+    background-color:red;
+    width:50%;
+    border:black 1px solid;
+}

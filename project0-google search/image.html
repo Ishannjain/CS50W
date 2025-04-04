@@ -1,0 +1,70 @@
+<!-- imagesearch.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Image Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 0;
+            padding: 0;
+        }
+        .nav {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+        }
+        .nav a {
+            margin-left: 10px;
+            text-decoration: none;
+            color: #1a73e8;
+        }
+        .search-container {
+            margin-top: 20vh;
+        }
+        .search-bar {
+            width: 500px;
+            height: 40px;
+            border: 1px solid #dfe1e5;
+            border-radius: 20px;
+            padding: 0 15px;
+            font-size: 16px;
+            outline: none;
+        }
+        .search-buttons {
+            margin-top: 20px;
+        }
+        .search-buttons button {
+            background-color: #f8f9fa;
+            border: 1px solid #f8f9fa;
+            padding: 10px 20px;
+            margin: 5px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .search-buttons button:hover {
+            background-color: #e8e8e8;
+        }
+    </style>
+</head>
+<body>
+    <div class="nav">
+        <a href="index.html">Google Search</a>
+        <a href="advancedsearch.html">Advanced Search</a>
+    </div>
+    <div class="search-container">
+        <img src="https://www.google.com/images/branding/googlelogo/1x/googlelogo_color_272x92dp.png" alt="Google Logo">
+        <form action="https://www.google.com/search" method="get">
+            <input type="text" name="q" class="search-bar" placeholder="Search Images">
+            <input type="hidden" name="tbm" value="isch">
+            <div class="search-buttons">
+                <button type="submit">Search Images</button>
+            </div>
+        </form>
+    </div>
+</body>
+</html>
